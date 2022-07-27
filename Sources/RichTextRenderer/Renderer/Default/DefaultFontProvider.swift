@@ -50,7 +50,7 @@ public final class DefaultFontProvider: FontProviding {
     }
 
     public init(
-        baseFont: UIFont = UIFont.systemFont(ofSize: UIFont.systemFontSize),
+		baseFont: UIFont = UIFont.systemFont(ofSize: UIFont.labelFontSize),
         monospacedFont: UIFont? = UIFont(name: "Menlo-Regular", size: UIFont.systemFontSize)
     ) {
         self.baseFont = baseFont

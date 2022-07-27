@@ -5,7 +5,7 @@ import UIKit
 
 extension FontProviding {
     /// Return a font based on the `Text.Mark`.
-    func font(for textNode: Text) -> UIFont {
+	public func font(for textNode: Text) -> UIFont {
         let markTypes = textNode.marks.map { $0.type }
 
         if markTypes.contains(.bold) && markTypes.contains(.italic) {

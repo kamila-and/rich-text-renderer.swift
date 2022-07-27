@@ -58,17 +58,21 @@ open class RichTextViewController: UIViewController, NSLayoutManagerDelegate {
 
     /// trim whitespace from beginning and end of rendered string
     private var trimWhitespace: Bool
+	
+	private var backgroundColor: UIColor
 
     public init(
         renderer: RichTextDocumentRenderer,
         richTextDocument: RichTextDocument? = nil,
         isScrollEnabled: Bool? = nil,
-        trimWhitespace: Bool? = nil
+        trimWhitespace: Bool? = nil,
+		backgroundColor: UIColor? = nil
     ) {
         self.richTextDocument = richTextDocument
         self.renderer = renderer
         self.isScrollEnabled = isScrollEnabled ?? true
         self.trimWhitespace = trimWhitespace ?? false
+		self.backgroundColor = backgroundColor ?? UIColor.rtrSystemBackground
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -110,7 +114,7 @@ open class RichTextViewController: UIViewController, NSLayoutManagerDelegate {
     private func setupTextView() {
         textView = UITextView(frame: view.bounds, textContainer: textContainer)
         textView.textContainerInset = renderer.configuration.contentInsets
-        textView.backgroundColor = UIColor.rtrSystemBackground
+        textView.backgroundColor = backgroundColor
 
         view.addSubview(textView)
 
@@ -121,7 +125,7 @@ open class RichTextViewController: UIViewController, NSLayoutManagerDelegate {
         textView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
 
         if isScrollEnabled {
-            textView.isScrollEnabled = false
+            textView.isScrollEnabled = true
             textView.contentSize.height = .greatestFiniteMagnitude
         } else {
             // omitting .greatestFiniteMagnitude lets UITextView fit content when not scrolling
