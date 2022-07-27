@@ -121,7 +121,7 @@ open class RichTextViewController: UIViewController, NSLayoutManagerDelegate {
         textView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
 
         if isScrollEnabled {
-            textView.isScrollEnabled = true
+            textView.isScrollEnabled = false
             textView.contentSize.height = .greatestFiniteMagnitude
         } else {
             // omitting .greatestFiniteMagnitude lets UITextView fit content when not scrolling
