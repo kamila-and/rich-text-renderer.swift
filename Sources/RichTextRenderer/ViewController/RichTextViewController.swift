@@ -14,6 +14,8 @@ open class RichTextViewController: UIViewController, NSLayoutManagerDelegate {
         static let embedSuffix = "-embed"
         static let hrSuffix = "-hr"
     }
+	
+	public weak var delegate: TextTappedDelegate?
 
     /// Renderer of the `Contentful.RichTextDocument`.
     private let renderer: RichTextDocumentRenderer
@@ -115,6 +117,7 @@ open class RichTextViewController: UIViewController, NSLayoutManagerDelegate {
         textView = UITextView(frame: view.bounds, textContainer: textContainer)
         textView.textContainerInset = renderer.configuration.contentInsets
         textView.backgroundColor = backgroundColor
+		textView.delegate = self
 
         view.addSubview(textView)
 
@@ -353,4 +356,38 @@ open class RichTextViewController: UIViewController, NSLayoutManagerDelegate {
         exclusionPathsStorage[key] = exclusionPath
         textView.textContainer.exclusionPaths.append(exclusionPath)
     }
+}
+
+extension RichTextViewController: UITextViewDelegate {
+
+	public func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+		if UIApplication.shared.canOpenURL(URL) {
+			UIApplication.shared.open(URL)
+		} else {
+
+			guard let substring = textView.attributedText.string.substring(with: characterRange) else { return false }
+
+			var contents = richTextDocument?.content.makeIterator()
+			var resourceLinkInline: [ResourceLinkData] = []
+			while let blockNode = contents?.next() as? BlockNode {
+
+				if let resourceLink = (blockNode.content.filter ({ $0.nodeType == .embeddedEntryInline }) as? [ResourceLinkInline])?.compactMap({ $0.data }) {
+					resourceLinkInline.append(contentsOf: resourceLink)
+				}
+			}
+			delegate?.tappedText(String(substring), data: resourceLinkInline)
+		}
+		return false
+	}
+}
+
+extension String {
+	func substring(with nsrange: NSRange) -> Substring? {
+		guard let range = Range(nsrange, in: self) else { return nil }
+		return self[range]
+	}
+}
+
+public protocol TextTappedDelegate: AnyObject {
+	func tappedText(_ text: String, data: [ResourceLinkData])
 }
