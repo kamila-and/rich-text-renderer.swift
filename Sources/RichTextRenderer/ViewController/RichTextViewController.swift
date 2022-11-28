@@ -62,19 +62,23 @@ open class RichTextViewController: UIViewController, NSLayoutManagerDelegate {
     private var trimWhitespace: Bool
 	
 	private var backgroundColor: UIColor
+	
+	private var linksColor: UIColor
 
     public init(
         renderer: RichTextDocumentRenderer,
         richTextDocument: RichTextDocument? = nil,
         isScrollEnabled: Bool? = nil,
         trimWhitespace: Bool? = nil,
-		backgroundColor: UIColor? = nil
+		backgroundColor: UIColor? = nil,
+		linksColor: UIColor? = nil 
     ) {
         self.richTextDocument = richTextDocument
         self.renderer = renderer
         self.isScrollEnabled = isScrollEnabled ?? true
         self.trimWhitespace = trimWhitespace ?? false
 		self.backgroundColor = backgroundColor ?? UIColor.rtrSystemBackground
+		self.linksColor = linksColor ?? UIColor.rtrLabel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -135,6 +139,8 @@ open class RichTextViewController: UIViewController, NSLayoutManagerDelegate {
             textView.isScrollEnabled = false
         }
         textView.isEditable = false
+		textView.linkTextAttributes = [NSAttributedString.Key.foregroundColor: linksColor,
+									   NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue]
     }
 
     private func invalidateLayout() {
